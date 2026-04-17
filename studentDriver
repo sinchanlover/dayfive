@@ -62,7 +62,7 @@ class Student extends Hostel implements Department {
     }
 }
 
-class StudentDriver {
+class studentDriver {
     public static void main(String[] args) {
         Student s = new Student();
         s.getStudentData();
