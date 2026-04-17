@@ -85,7 +85,7 @@ class Cone extends ThreeDObject {
     }
 }
 
-public class ThreeDDriver {
+public class threeDDriver {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         System.out.println("1. Box\n2. Cube\n3. Cylinder\n4. Cone");
