@@ -1,0 +1,106 @@
+import java.util.Scanner;
+
+abstract class Call {
+    private String originCode;
+    private String destCode;
+    private double duration;
+
+    public Call() {}
+
+    public Call(String originCode, String destCode, double duration) {
+        this.originCode = originCode;
+        this.destCode = destCode;
+        this.duration = duration;
+    }
+
+    public String getOriginCode() { return originCode; }
+    public String getDestCode() { return destCode; }
+    public double getDuration() { return duration; }
+
+    public abstract double calculateBill();
+}
+
+class LocalCall extends Call {
+    public LocalCall() { super(); }
+    public LocalCall(String origin, String dest, double duration) {
+        super(origin, dest, duration);
+    }
+
+    @Override
+    public double calculateBill() {
+        int units = (int) Math.ceil(getDuration() / 3.0);
+        return units * 0.1;
+    }
+}
+
+class LongCall extends Call {
+    private String timeStr;
+
+    public LongCall() { super(); }
+    public LongCall(String origin, String dest, double duration, String timeStr) {
+        super(origin, dest, duration);
+        this.timeStr = timeStr;
+    }
+
+    private boolean isDayTime() {
+        String[] parts = timeStr.toLowerCase().split("[:\\s+]");
+        int hour = Integer.parseInt(parts[0]);
+        int minute = Integer.parseInt(parts[1]);
+        String amPm = parts[2];
+
+        if (amPm.equals("pm") && hour != 12) hour += 12;
+        if (amPm.equals("am") && hour == 12) hour = 0;
+
+        int totalMinutes = (hour * 60) + minute;
+        int dayStart = 6 * 60;
+        int dayEnd = 22 * 60;
+
+        return totalMinutes >= dayStart && totalMinutes <= dayEnd;
+    }
+
+    @Override
+    public double calculateBill() {
+        double rate;
+        boolean day = isDayTime();
+        String code = getDestCode();
+
+        if (code.equals("011")) {
+            rate = day ? 1.0 : 0.5;
+        } else if (code.equals("022")) {
+            rate = day ? 1.5 : 0.5;
+        } else if (code.equals("044")) {
+            rate = day ? 0.75 : 0.4;
+        } else {
+            rate = 0.0;
+        }
+
+        int segments = (int) Math.ceil(getDuration() / 2.0);
+        return segments * rate;
+    }
+}
+
+public class BillingDriver {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("1. Local Call\n2. STD Call");
+        int type = Integer.parseInt(sc.nextLine());
+
+        if (type == 1) {
+            System.out.print("Enter duration (mins): ");
+            double dur = Double.parseDouble(sc.nextLine());
+            LocalCall lc = new LocalCall("033", "033", dur);
+            System.out.println("Total Bill: Rs " + lc.calculateBill());
+        } else if (type == 2) {
+            System.out.print("Enter Destination Code (011, 022, 044): ");
+            String dCode = sc.nextLine();
+            System.out.print("Enter duration (mins): ");
+            double dur = Double.parseDouble(sc.nextLine());
+            System.out.print("Enter Time (HH:MM AM/PM): ");
+            String time = sc.nextLine();
+
+            LongCall scall = new LongCall("033", dCode, dur, time);
+            System.out.println("Total Bill: Rs " + scall.calculateBill());
+        }
+    }
+}
