@@ -151,7 +151,7 @@ class CasualTypist extends Typist {
     }
 }
 
-public class InstitutionDriver {
+public class institutionDriver {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         System.out.println("1. Teacher\n2. Officer\n3. Regular Typist\n4. Casual Typist");
