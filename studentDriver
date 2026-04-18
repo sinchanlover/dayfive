@@ -1,8 +1,8 @@
 import java.util.Scanner;
 
 interface Department {
-    void getData();
-    void printData();
+    void getDeptData(Scanner sc);
+    void printDeptData();
 }
 
 class Hostel {
@@ -10,62 +10,95 @@ class Hostel {
     private String hostelLocation;
     private int noOfRooms;
 
-    public Hostel() {}
+    public Hostel() {
+        hostelName = "";
+        hostelLocation = "";
+        noOfRooms = 0;
+    }
 
-    public void getHostelData() {
-        Scanner sc = new Scanner(System.in);
-        this.hostelName = sc.nextLine();
-        this.hostelLocation = sc.nextLine();
-        this.noOfRooms = sc.nextInt();
+    public Hostel(String name, String location, int rooms) {
+        hostelName = name;
+        hostelLocation = location;
+        noOfRooms = rooms;
+    }
+
+    public void getHostelData(Scanner sc) {
+        System.out.print("Enter hostel name: ");
+        hostelName = sc.nextLine();
+        System.out.print("Enter hostel location: ");
+        hostelLocation = sc.nextLine();
+        System.out.print("Enter number of rooms: ");
+        noOfRooms = sc.nextInt();
+        sc.nextLine();
     }
 
     public void printHostelData() {
-        System.out.println(hostelName + " " + hostelLocation + " " + noOfRooms);
+        System.out.println("Hostel Name: " + hostelName);
+        System.out.println("Hostel Location: " + hostelLocation);
+        System.out.println("No of Rooms: " + noOfRooms);
     }
 }
 
 class Student extends Hostel implements Department {
     private String studentName;
-    private int regNo;
+    private String regNo;
     private String electiveSubject;
     private double avgMarks;
     private String depName;
     private String depHead;
 
-    public Student() { super(); }
+    public Student() {
+        super();
+        studentName = "";
+        regNo = "";
+        electiveSubject = "";
+        avgMarks = 0;
+        depName = "";
+        depHead = "";
+    }
 
-    public void getData() {
-        Scanner sc = new Scanner(System.in);
-        this.depName = sc.nextLine();
-        this.depHead = sc.nextLine();
+    public void getData(Scanner sc) {
+        System.out.print("Enter student name: ");
+        studentName = sc.nextLine();
+        System.out.print("Enter registration number: ");
+        regNo = sc.nextLine();
+        System.out.print("Enter elective subject: ");
+        electiveSubject = sc.nextLine();
+        System.out.print("Enter average marks: ");
+        avgMarks = sc.nextDouble();
+        sc.nextLine();
+        getHostelData(sc);
+        getDeptData(sc);
     }
 
     public void printData() {
-        System.out.println(depName + " " + depHead);
-    }
-
-    public void getStudentData() {
-        Scanner sc = new Scanner(System.in);
-        getHostelData();
-        getData();
-        this.studentName = sc.nextLine();
-        this.regNo = sc.nextInt();
-        sc.nextLine();
-        this.electiveSubject = sc.nextLine();
-        this.avgMarks = sc.nextDouble();
-    }
-
-    public void printStudentData() {
+        System.out.println("Name: " + studentName);
+        System.out.println("Reg No: " + regNo);
+        System.out.println("Elective Subject: " + electiveSubject);
+        System.out.println("Average Marks: " + avgMarks);
         printHostelData();
-        printData();
-        System.out.println(studentName + " " + regNo + " " + electiveSubject + " " + avgMarks);
+        printDeptData();
+    }
+
+    public void getDeptData(Scanner sc) {
+        System.out.print("Enter department name: ");
+        depName = sc.nextLine();
+        System.out.print("Enter department head: ");
+        depHead = sc.nextLine();
+    }
+
+    public void printDeptData() {
+        System.out.println("Department Name: " + depName);
+        System.out.println("Department Head: " + depHead);
     }
 }
 
-class studentDriver {
+public class Driver {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         Student s = new Student();
-        s.getStudentData();
-        s.printStudentData();
+        s.getData(sc);
+        s.printData();
+        sc.close();
     }
 }
