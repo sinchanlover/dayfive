@@ -1,24 +1,27 @@
 import java.util.Scanner;
 
 abstract class ThreeDObject {
-    private double dimension1;
-    private double dimension2;
-    private double dimension3;
+    private double dim1;
+    private double dim2;
+    private double dim3;
 
-    public ThreeDObject() {}
-
-    public ThreeDObject(double d1, double d2, double d3) {
-        this.dimension1 = d1;
-        this.dimension2 = d2;
-        this.dimension3 = d3;
+    public ThreeDObject() {
+        dim1 = dim2 = dim3 = 0;
     }
 
-    public double getD1() { return dimension1; }
-    public void setD1(double d1) { this.dimension1 = d1; }
-    public double getD2() { return dimension2; }
-    public void setD2(double d2) { this.dimension2 = d2; }
-    public double getD3() { return dimension3; }
-    public void setD3(double d3) { this.dimension3 = d3; }
+    public ThreeDObject(double d1, double d2, double d3) {
+        this.dim1 = d1;
+        this.dim2 = d2;
+        this.dim3 = d3;
+    }
+
+    public double getDim1() { return dim1; }
+    public double getDim2() { return dim2; }
+    public double getDim3() { return dim3; }
+
+    public void setDim1(double d1) { this.dim1 = d1; }
+    public void setDim2(double d2) { this.dim2 = d2; }
+    public void setDim3(double d3) { this.dim3 = d3; }
 
     public abstract double wholeSurfaceArea();
     public abstract double volume();
@@ -26,16 +29,17 @@ abstract class ThreeDObject {
 
 class Box extends ThreeDObject {
     public Box() { super(); }
-    public Box(double l, double w, double h) { super(l, w, h); }
+    public Box(double l, double b, double h) { super(l, b, h); }
 
-    @Override
     public double wholeSurfaceArea() {
-        return 2 * (getD1() * getD2() + getD2() * getD3() + getD3() * getD1());
+        double l = getDim1();
+        double b = getDim2();
+        double h = getDim3();
+        return 2 * (l*b + b*h + h*l);
     }
 
-    @Override
     public double volume() {
-        return getD1() * getD2() * getD3();
+        return getDim1() * getDim2() * getDim3();
     }
 }
 
@@ -43,14 +47,14 @@ class Cube extends ThreeDObject {
     public Cube() { super(); }
     public Cube(double side) { super(side, side, side); }
 
-    @Override
     public double wholeSurfaceArea() {
-        return 6 * Math.pow(getD1(), 2);
+        double s = getDim1();
+        return 6 * s * s;
     }
 
-    @Override
     public double volume() {
-        return Math.pow(getD1(), 3);
+        double s = getDim1();
+        return s * s * s;
     }
 }
 
@@ -58,14 +62,16 @@ class Cylinder extends ThreeDObject {
     public Cylinder() { super(); }
     public Cylinder(double r, double h) { super(r, h, 0); }
 
-    @Override
     public double wholeSurfaceArea() {
-        return 2 * Math.PI * getD1() * (getD1() + getD2());
+        double r = getDim1();
+        double h = getDim2();
+        return 2 * Math.PI * r * (r + h);
     }
 
-    @Override
     public double volume() {
-        return Math.PI * Math.pow(getD1(), 2) * getD2();
+        double r = getDim1();
+        double h = getDim2();
+        return Math.PI * r * r * h;
     }
 }
 
@@ -73,38 +79,62 @@ class Cone extends ThreeDObject {
     public Cone() { super(); }
     public Cone(double r, double h) { super(r, h, 0); }
 
-    @Override
     public double wholeSurfaceArea() {
-        double s = Math.sqrt(Math.pow(getD1(), 2) + Math.pow(getD2(), 2));
-        return Math.PI * getD1() * (getD1() + s);
+        double r = getDim1();
+        double h = getDim2();
+        double l = Math.sqrt(r*r + h*h);
+        return Math.PI * r * (r + l);
     }
 
-    @Override
     public double volume() {
-        return (1.0/3.0) * Math.PI * Math.pow(getD1(), 2) * getD2();
+        double r = getDim1();
+        double h = getDim2();
+        return (1.0/3) * Math.PI * r * r * h;
     }
 }
 
-public class threeDDriver {
+public class Driver {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("1. Box\n2. Cube\n3. Cylinder\n4. Cone");
-        int choice = sc.nextInt();
-        ThreeDObject obj = null;
+        int choice;
 
-        if (choice == 1) {
-            obj = new Box(sc.nextDouble(), sc.nextDouble(), sc.nextDouble());
-        } else if (choice == 2) {
-            obj = new Cube(sc.nextDouble());
-        } else if (choice == 3) {
-            obj = new Cylinder(sc.nextDouble(), sc.nextDouble());
-        } else if (choice == 4) {
-            obj = new Cone(sc.nextDouble(), sc.nextDouble());
-        }
+        do {
+            System.out.println("\n1. Box\n2. Cube\n3. Cylinder\n4. Cone\n5. Exit");
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
 
-        if (obj != null) {
-            System.out.println("Surface Area: " + obj.wholeSurfaceArea());
-            System.out.println("Volume: " + obj.volume());
-        }
+            if (choice == 1) {
+                System.out.print("Enter length breadth height: ");
+                double l = sc.nextDouble();
+                double b = sc.nextDouble();
+                double h = sc.nextDouble();
+                ThreeDObject obj = new Box(l, b, h);
+                print(obj);
+            } else if (choice == 2) {
+                System.out.print("Enter side: ");
+                double s = sc.nextDouble();
+                ThreeDObject obj = new Cube(s);
+                print(obj);
+            } else if (choice == 3) {
+                System.out.print("Enter radius height: ");
+                double r = sc.nextDouble();
+                double h = sc.nextDouble();
+                ThreeDObject obj = new Cylinder(r, h);
+                print(obj);
+            } else if (choice == 4) {
+                System.out.print("Enter radius height: ");
+                double r = sc.nextDouble();
+                double h = sc.nextDouble();
+                ThreeDObject obj = new Cone(r, h);
+                print(obj);
+            }
+        } while (choice != 5);
+
+        sc.close();
+    }
+
+    public static void print(ThreeDObject obj) {
+        System.out.println("Volume = " + obj.volume());
+        System.out.println("Surface Area = " + obj.wholeSurfaceArea());
     }
 }
